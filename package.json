@@ -1,0 +1,53 @@
+{
+  "name": "pixi-svg",
+  "version": "1.0.0",
+  "description": "SVG converter for PIXI.Graphics",
+  "main": "dist/pixi-svg.js",
+  "scripts": {
+    "test": "npm run lint",
+    "lint": "eslint src",
+    "prebuild": "rimraf dist/*",
+    "build": "pixify -d dist -o \"pixi-svg\" -t babelify",
+    "watch": "npm run build -- --watch",
+    "publish:patch": "npm version patch && npm run publish",
+    "publish:minor": "npm version minor && npm run publish",
+    "publish:major": "npm version major && npm run publish",
+    "postversion": "npm test && npm run build",
+    "postpublish": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bigtimebuddy/pixi-svg.git"
+  },
+  "keywords": [
+    "svg",
+    "pixi.js",
+    "graphics",
+    "rendering",
+    "webgl"
+  ],
+  "files": [
+    "dist/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "author": "Matt Karl <matt@mattkarl.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bigtimebuddy/pixi-svg/issues"
+  },
+  "homepage": "https://github.com/bigtimebuddy/pixi-svg#readme",
+  "dependencies": {
+    "d-path-parser": "^1.0.0"
+  },
+  "peerDependencies": {
+    "pixi.js": "^4.0.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^7.3.0",
+    "eslint": "^3.19.0",
+    "pixify": "^1.9.0",
+    "rimraf": "^2.6.1"
+  }
+}
