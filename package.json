@@ -13,7 +13,8 @@
     "publish:minor": "npm version minor && npm run publish",
     "publish:major": "npm version major && npm run publish",
     "postversion": "npm test && npm run build",
-    "postpublish": "git push && git push --tags"
+    "postpublish": "git push && git push --tags && npm run deploy",
+    "deploy": "gh-pages -d . -a \"dist/*\" -a \"example/index.html\""
   },
   "repository": {
     "type": "git",
