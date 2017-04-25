@@ -1,6 +1,6 @@
 # pixi-svg
 
-SVG to Graphics DisplayObject for PIXI.
+SVG to Graphics DisplayObject for pixi.js.
 
 ## Install
 
