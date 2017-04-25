@@ -46,6 +46,14 @@ export default class SVG extends PIXI.Graphics {
                     this.svgRect(child);
                     break;
                 }
+                case 'polygon': {
+                    this.svgPoly(child, true);
+                    break;
+                }
+                case 'polyline': {
+                    this.svgPoly(child);
+                    break;
+                }
                 case 'g': {
                     break;
                 }
@@ -153,6 +161,53 @@ export default class SVG extends PIXI.Graphics {
     }
 
     /**
+     * Get the style property and parse options.
+     * @private
+     * @method PIXI.SVG#svgStyle
+     * @param {SVGElement} node
+     * @return {Object} Style attributes
+     */
+    svgStyle (node) {
+        const style = node.getAttribute('style');
+        const result = {
+            fill: node.getAttribute('fill'),
+            opacity: node.getAttribute('opacity'),
+            stroke: node.getAttribute('stroke'),
+            strokeWidth: node.getAttribute('stroke-width')
+        };
+        if (style !== null) {
+            style.split(';').forEach(prop => {
+                const [name, value] = prop.split(':');
+                result[name.trim()] = value.trim();
+            });
+            if (result['stroke-width']) {
+                result.strokeWidth = result['stroke-width'];
+                delete result['stroke-width'];
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Render a polyline element.
+     * @private
+     * @method PIXI.SVG#svgPoly
+     * @param {SVGPolylineElement} node
+     */
+    svgPoly (node, close) {
+
+        const points = node.getAttribute('points')
+            .split(/[ ,]/g)
+            .map(p => parseInt(p));
+
+        this.drawPolygon(points);
+
+        if (close) {
+            this.closePath();
+        }
+    }
+
+    /**
      * Set the fill and stroke style.
      * @private
      * @method PIXI.SVG#fill
@@ -160,11 +215,10 @@ export default class SVG extends PIXI.Graphics {
      * @param {Boolean} inherit
      */
     fill (node, inherit) {
-        const fill = node.getAttribute('fill');
-        const opacity = node.getAttribute('opacity');
-        const stroke = node.getAttribute('stroke');
-        const strokeWidth = node.getAttribute('stroke-width');
-        const lineWidth = strokeWidth !== null ? parseFloat(strokeWidth) : 0;
+
+        const {fill, opacity, stroke, strokeWidth} = this.svgStyle(node);
+        const defaultLineWidth = stroke !== null ? 1 : 0;
+        const lineWidth = strokeWidth !== null ? parseFloat(strokeWidth) : defaultLineWidth;
         const lineColor = stroke !== null ? this.hexToUint(stroke) : this.lineColor;
         if (fill) {
             if (fill === 'none') {
