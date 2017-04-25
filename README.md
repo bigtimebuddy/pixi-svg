@@ -28,6 +28,34 @@ const app = new PIXI.Application();
 app.stage.addChild(svg);
 ```
 
+## Supported Features
+
+Only supports a subset of SVG's feature. Current this includes: 
+- SVG Elements:
+  - `<path>`
+  - `<circle>`
+  - `<rect>`
+  - `<polygon>`
+  - `<polyline>`
+  - `<g>`
+- `style` attributes with the following properties:
+  - `stroke`
+  - `stroke-width`
+  - `fill`
+  - `opacity`
+
+## Unsupported Features
+
+- Interactivity
+- Any `transform` attributes
+- `<style>` elements are ignored
+- `<path>` elements which use arcs to draw (`a` or `A` drawing command)
+- Gradients or images
+- The following attributes are also ignored:
+  - `stroke-linejoin`
+  - `stroke-linecap`
+  - `fill-rule`
+
 ## License
 
 MIT License.
