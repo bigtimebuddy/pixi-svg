@@ -2,6 +2,8 @@
 
 SVG to Graphics DisplayObject for pixi.js.
 
+[![Build Status](https://travis-ci.org/bigtimebuddy/pixi-svg.svg?branch=master)](https://travis-ci.org/bigtimebuddy/pixi-svg)
+
 ## Install
 
 ```bash
