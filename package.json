@@ -1,7 +1,7 @@
 {
   "name": "pixi-svg",
   "version": "1.0.0",
-  "description": "SVG converter for PIXI.Graphics",
+  "description": "SVG to Graphics DisplayObject for PIXI",
   "main": "dist/pixi-svg.js",
   "scripts": {
     "test": "npm run lint",
