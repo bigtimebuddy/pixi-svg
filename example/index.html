@@ -8,7 +8,7 @@
         <style>
             body {
               text-align:center;
-              background:#eee;
+              background:#fff;
               margin:0;
               padding:0;
             }
@@ -18,20 +18,23 @@
               margin:0 auto;
               max-width: 400px;
             }
+            canvas,
+            svg {
+              width:100%;
+            }
             .pixi,
             .svg {
               font-size:0;
               display: block;
               width: 50%;
               float: left;
-              background: #fff;
               padding: 10px 0;
             }
             .title {
               text-align: center;
               font-weight: bold;
               color:#999;
-              font-size:32px;
+              font-size:24px;
               font-family:Helvetica, sans-serif;
               padding:10px 0;
             }
@@ -112,7 +115,7 @@
                 const graphics = new PIXI.SVG(svg);
                 graphics.scale.set(resolution);
                 const viewBox = svg.getAttribute('viewBox').split(' ');
-                const style = `width:${viewBox[2]}px;height:${viewBox[3]}px`;
+                const style = `max-width:${viewBox[2]}px;max-height:${viewBox[3]}px`;
                 const app = new PIXI.Application({
                     width: viewBox[2] * resolution,
                     height: viewBox[3] * resolution,
