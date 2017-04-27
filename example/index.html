@@ -22,7 +22,7 @@
               display:none;
             }
             canvas,
-            svg {
+            img {
               width:100%;
             }
             .pixi,
@@ -31,7 +31,8 @@
               display: block;
               width: 50%;
               float: left;
-              padding: 10px 0;
+              padding: 10px;
+              box-sizing: border-box;
             }
             .title {
               text-align: center;
@@ -153,37 +154,54 @@
         </div>
         <script>
 
-            function drawSVG(svg) {
-                const resolution = window.devicePixelRatio;
-                const graphics = new PIXI.SVG(svg);
-                graphics.scale.set(resolution);
+            const resolution = window.devicePixelRatio;
+            let appWidth = 0;
+            let appHeight = 240;
+            let aspectRatio = 1;
+            let app = null;
+            let style = null;
+
+            function measureSVG(svg) {
                 const viewBox = svg.getAttribute('viewBox').split(' ');
-                const style = `max-width:${viewBox[2]}px;max-height:${viewBox[3]}px`;
-                const app = new PIXI.Application({
-                    width: viewBox[2] * resolution,
-                    height: viewBox[3] * resolution,
-                    backgroundColor: 0xffffff,
-                    sharedTicker: true
-                });
-                app.view.style = style;
-                app.stop();
+                const width = parseInt(viewBox[2]);
+                const height = parseInt(viewBox[3]);
+                svg.dataset.width = width;
+                svg.dataset.height = height;
+                aspectRatio = Math.min(width / height, aspectRatio);
+                appWidth = aspectRatio * appHeight;
+            }
+
+            function drawSVG(svg) {
+                const graphics = new PIXI.SVG(svg);
+                graphics.scale.set(appWidth / svg.dataset.width * resolution);
+                // svg.style = style;
+                app.stage.removeChildren();
                 app.stage.addChild(graphics);
                 app.ticker.update();
-                svg.style = style;
 
                 const row = document.createElement('div');
                 row.className = 'row';
                 const pixiContainer = document.createElement('div');
                 pixiContainer.className = 'pixi';
+                pixiContainer.appendChild(app.renderer.plugins.extract.image());
                 const svgContainer = document.createElement('div');
                 svgContainer.className = 'svg';
                 svgContainer.appendChild(svg);
-                pixiContainer.appendChild(app.view);
                 row.appendChild(pixiContainer);
                 row.appendChild(svgContainer);
                 document.body.appendChild(row);
             }
-            document.querySelectorAll('svg').forEach(drawSVG);
+            const svgs = document.querySelectorAll('svg');
+            svgs.forEach(measureSVG);
+            style = `max-width:${appWidth}px;max-height:${appHeight}px`;
+            app = new PIXI.Application({
+                width: appWidth * resolution,
+                height: appHeight * resolution,
+                backgroundColor: 0xffffff,
+                sharedTicker: true
+            });
+            app.stop();
+            svgs.forEach(drawSVG);
 
         </script>
     </body>
