@@ -4,12 +4,14 @@ import SVG from './SVG';
 if (typeof PIXI === 'undefined') {
     throw 'pixi.js not found';
 }
-
-// Assign to global pixi object
-Object.defineProperty(PIXI, 'SVG', {
-    get() {
-        return SVG;
-    }
-});
+// Don't define twice
+else if (!PIXI.SVG) {
+    // Assign to global pixi object
+    Object.defineProperty(PIXI, 'SVG', {
+        get() {
+            return SVG;
+        }
+    });
+}
 
 export default SVG;
