@@ -11,4 +11,3 @@ cache:
 
 script:
     - npm test
-    - npm run build

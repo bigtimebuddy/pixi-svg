@@ -2,17 +2,20 @@
   "name": "pixi-svg",
   "version": "1.0.0",
   "description": "SVG to Graphics DisplayObject for PIXI",
-  "main": "dist/pixi-svg.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "npm run lint",
+    "test": "npm run lint && npm run build",
     "lint": "eslint src",
-    "prebuild": "rimraf dist/*",
-    "build": "pixify -d dist -o \"pixi-svg\" -t babelify",
-    "watch": "npm run build -- --watch",
+    "build": "npm run dist && npm run lib",
+    "predist": "rimraf dist/*",
+    "dist": "pixify -d dist -o \"pixi-svg\" -t babelify",
+    "prelib": "rimraf lib/*",
+    "lib": "babel src --out-dir lib -s",
+    "watch": "npm run dist -- --watch",
     "publish:patch": "npm version patch && npm run publish",
     "publish:minor": "npm version minor && npm run publish",
     "publish:major": "npm version major && npm run publish",
-    "postversion": "npm test && npm run build",
+    "postversion": "npm test",
     "postpublish": "git push && git push --tags && npm run deploy",
     "deploy": "gh-pages -d . -s \"{dist,example}/*\""
   },
@@ -29,6 +32,7 @@
   ],
   "files": [
     "dist/*",
+    "lib/*",
     "README.md",
     "LICENSE"
   ],
@@ -45,6 +49,7 @@
     "pixi.js": "^4.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^7.3.0",
     "eslint": "^3.19.0",
