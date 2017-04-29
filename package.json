@@ -12,9 +12,9 @@
     "prelib": "rimraf lib/*",
     "lib": "babel src --out-dir lib -s",
     "watch": "npm run dist -- --watch",
-    "publish:patch": "npm version patch && npm run publish",
-    "publish:minor": "npm version minor && npm run publish",
-    "publish:major": "npm version major && npm run publish",
+    "publish:patch": "npm version patch && npm publish",
+    "publish:minor": "npm version minor && npm publish",
+    "publish:major": "npm version major && npm publish",
     "postversion": "npm test",
     "postpublish": "git push && git push --tags && npm run deploy",
     "deploy": "gh-pages -d . -s \"{dist,example}/*\""
@@ -36,6 +36,7 @@
     "README.md",
     "LICENSE"
   ],
+  "readme": "README.md",
   "author": "Matt Karl <matt@mattkarl.com>",
   "license": "MIT",
   "bugs": {
