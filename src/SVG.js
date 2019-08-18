@@ -178,7 +178,7 @@ export default class SVG extends PIXI.Graphics {
         if (style !== null) {
             style.split(';').forEach(prop => {
                 const [name, value] = prop.split(':');
-                result[name.trim()] = value.trim();
+                if(name) result[name.trim()] = value.trim();
             });
             if (result['stroke-width']) {
                 result.strokeWidth = result['stroke-width'];
