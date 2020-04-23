@@ -1,18 +1,20 @@
-# pixi-svg
+# PixiJS SVG Graphics
 
-SVG to Graphics DisplayObject for pixi.js.
+SVG to Graphics DisplayObject for PixiJS.
 
 [![Node.js CI](https://github.com/bigtimebuddy/pixi-svg/workflows/Node.js%20CI/badge.svg)](https://github.com/bigtimebuddy/pixi-svg/actions?query=workflow%3A%22Node.js+CI%22)
 
 ## Examples
 
 See SVG and pixi.js side-by-side comparisons:
-https://bigtimebuddy.github.io/pixi-svg/example/
+https://mattkarl.com/pixi-svg/example/
 
 ## Install
 
 ```bash
 npm install pixi-svg --save
+# or
+yarn add pixi-svg
 ```
 
 ## Usage
@@ -28,8 +30,11 @@ For an inline SVG element:
 Create a new `PIXI.SVG` object, provide the `<svg>` element.
 
 ```js
-const svg = new PIXI.SVG(document.getElementById("svg1"));
-const app = new PIXI.Application();
+import { Application } from '@pixi/app';
+import { SVG } from 'pixi-svg';
+
+const svg = new SVG(document.getElementById("svg1"));
+const app = new Application();
 app.stage.addChild(svg);
 ```
 
