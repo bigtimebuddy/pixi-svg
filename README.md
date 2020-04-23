@@ -48,6 +48,8 @@ Only supports a subset of SVG's feature. Current this includes:
   - `stroke-width`
   - `fill`
   - `opacity`
+  - `stroke-linejoin`
+  - `stroke-linecap`
 
 ## Unsupported Features
 
@@ -59,8 +61,6 @@ Only supports a subset of SVG's feature. Current this includes:
 - `<text>` elements are ignored
 - Gradients or images
 - The following attributes are also ignored:
-  - `stroke-linejoin`
-  - `stroke-linecap`
   - `fill-rule`
 
 ## License
