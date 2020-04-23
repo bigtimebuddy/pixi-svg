@@ -1,5 +1,6 @@
 import { Graphics } from '@pixi/graphics';
-import { dPathParser } from './dPathParser';
+import dPathParser from 'd-path-parser';
+import color from 'tinycolor2';
 
 /**
  * Scalable Graphics drawn from SVG image document.
@@ -88,16 +89,9 @@ class SVG extends Graphics
             return parseInt(hex, 16);
         }
 
-        const measureColor = SVG.measureColor;
+        const { r, g, b } = color(hex).toRgb();
 
-        measureColor.style.color = hex;
-        const rgb = window.getComputedStyle(document.body.appendChild(measureColor)).color
-            .match(/\d+/g)
-            .map((a) => parseInt(a, 10));
-
-        document.body.removeChild(measureColor);
-
-        return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+        return (r << 16) + (g << 8) + b;
     }
 
     /**
@@ -399,12 +393,4 @@ class SVG extends Graphics
     }
 }
 
-/**
- * <div> element to measure string colors like "black"
- * and convert to hex colors
- * @private
- */
-SVG.measureColor = document.createElement('div');
-
 export { SVG };
-
