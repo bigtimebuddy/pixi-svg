@@ -311,13 +311,11 @@ export default class SVG extends PIXI.Graphics {
                     break;
                 }
                 case 'C': {
-                    const currX = x;
-                    const currY = y;
                     this.bezierCurveTo(
-                        currX + command.cp1.x,
-                        currY + command.cp1.y,
-                        currX + command.cp2.x,
-                        currY + command.cp2.y,
+                        command.cp1.x,
+                        command.cp1.y,
+                        command.cp2.x,
+                        command.cp2.y,
                         x = command.end.x,
                         y = command.end.y
                     );
@@ -350,11 +348,9 @@ export default class SVG extends PIXI.Graphics {
                 }
                 case 'S':
                 case 'Q': {
-                    const currX = x;
-                    const currY = y;
                     this.quadraticCurveTo(
-                        currX + command.cp.x,
-                        currY + command.cp.y,
+                        command.cp.x,
+                        command.cp.y,
                         x = command.end.x,
                         y = command.end.y
                     );
