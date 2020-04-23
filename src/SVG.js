@@ -1,8 +1,5 @@
-import dPathParse from 'd-path-parser';
-
-// <div> element to measure string colors like "black"
-// and convert to hex colors
-const measureColor = document.createElement('div');
+import { Graphics } from '@pixi/graphics';
+import { dPathParser } from './dPathParser';
 
 /**
  * Scalable Graphics drawn from SVG image document.
@@ -11,102 +8,112 @@ const measureColor = document.createElement('div');
  * @memberof PIXI
  * @param {SVGSVGElement} svg - SVG Element `<svg>`
  */
-export default class SVG extends PIXI.Graphics {
-    /**
-     * Constructor
-     */
-    constructor (svg) {
+class SVG extends Graphics
+{
+    constructor(svg)
+    {
         super();
-        this.fill(svg);
-        this.svgChildren(svg.children);
+        this._svgFill(svg);
+        this._svgChildren(svg.children);
     }
 
     /**
      * Create a PIXI Graphic from SVG element
      * @private
-     * @method PIXI.SVG#svgChildren
+     * @method
      * @param {Array<*>} children - Collection of SVG nodes
      * @param {Boolean} [inherit=false] Whether to inherit fill settings.
      */
-    svgChildren (children, inherit = false) {
-        for (let i = 0; i < children.length; i++) {
+    _svgChildren(children, inherit = false)
+    {
+        for (let i = 0; i < children.length; i++)
+        {
             const child = children[i];
-            this.fill(child, inherit);
-            switch (child.nodeName.toLowerCase()) {
+
+            this._svgFill(child, inherit);
+            switch (child.nodeName.toLowerCase())
+            {
                 case 'path': {
-                    this.svgPath(child);
+                    this._svgPath(child);
                     break;
                 }
                 case 'circle':
                 case 'ellipse': {
-                    this.svgCircle(child);
+                    this._svgCircle(child);
                     break;
                 }
                 case 'rect': {
-                    this.svgRect(child);
+                    this._svgRect(child);
                     break;
                 }
                 case 'polygon': {
-                    this.svgPoly(child, true);
+                    this._svgPoly(child, true);
                     break;
                 }
                 case 'polyline': {
-                    this.svgPoly(child);
+                    this._svgPoly(child);
                     break;
                 }
                 case 'g': {
                     break;
                 }
                 default: {
-                    // @if DEBUG
-                    console.info('[SVGUtils] <%s> elements unsupported', child.nodeName);
-                    // @endif
+                    // eslint-disable-next-line no-console
+                    console.info(`[PIXI.SVG] <${child.nodeName}> elements unsupported`);
                     break;
                 }
             }
-            this.svgChildren(child.children, true);
+            this._svgChildren(child.children, true);
         }
     }
 
     /**
      * Convert the Hexidecimal string (e.g., "#fff") to uint
      * @private
-     * @method PIXI.SVG#hexToUint
+     * @method
      */
-    hexToUint (hex) {
-        if (hex[0] === '#') {
-                        // Remove the hash
+    _hexToUint(hex)
+    {
+        if (hex[0] === '#')
+        {
+            // Remove the hash
             hex = hex.substr(1);
 
-                        // Convert shortcolors fc9 to ffcc99
-            if (hex.length === 3) {
+            // Convert shortcolors fc9 to ffcc99
+            if (hex.length === 3)
+            {
                 hex = hex.replace(/([a-f0-9])/ig, '$1$1');
             }
+
             return parseInt(hex, 16);
-        } else {
-            measureColor.style.color = hex;
-            const rgb = window.getComputedStyle(document.body.appendChild(measureColor)).color
-                .match(/\d+/g)
-                .map(function (a) {
-                    return parseInt(a, 10);
-                });
-            document.body.removeChild(measureColor);
-            return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
         }
+
+        const measureColor = SVG.measureColor;
+
+        measureColor.style.color = hex;
+        const rgb = window.getComputedStyle(document.body.appendChild(measureColor)).color
+            .match(/\d+/g)
+            .map((a) => parseInt(a, 10));
+
+        document.body.removeChild(measureColor);
+
+        return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
     }
 
     /**
      * Render a <ellipse> element or <circle> element
      * @private
-     * @method PIXI.SVG#internalEllipse
+     * @method
      * @param {SVGCircleElement} node
      */
-    svgCircle (node) {
-
+    _svgCircle(node)
+    {
         let heightProp = 'r';
         let widthProp = 'r';
         const isEllipse = node.nodeName === 'elipse';
-        if (isEllipse) {
+
+        if (isEllipse)
+        {
             heightProp += 'x';
             widthProp += 'y';
         }
@@ -116,16 +123,21 @@ export default class SVG extends PIXI.Graphics {
         const cy = node.getAttribute('cy');
         let x = 0;
         let y = 0;
-        if (cx !== null) {
+
+        if (cx !== null)
+        {
             x = parseFloat(cx);
         }
-        if (cy !== null) {
+        if (cy !== null)
+        {
             y = parseFloat(cy);
         }
-        if (!isEllipse) {
+        if (!isEllipse)
+        {
             this.drawCircle(x, y, width);
         }
-        else {
+        else
+        {
             this.drawEllipse(x, y, width, height);
         }
     }
@@ -133,76 +145,84 @@ export default class SVG extends PIXI.Graphics {
     /**
      * Render a <rect> element
      * @private
-     * @method PIXI.SVG#svgRect
+     * @method
      * @param {SVGRectElement} node
      */
-    svgRect (node) {
+    _svgRect(node)
+    {
         const x = parseFloat(node.getAttribute('x'));
         const y = parseFloat(node.getAttribute('y'));
         const width = parseFloat(node.getAttribute('width'));
         const height = parseFloat(node.getAttribute('height'));
         const rx = parseFloat(node.getAttribute('rx'));
-        if (rx) {
-            this.drawRoundedRect(
-                x,
-                y,
-                width,
-                height,
-                rx
-            );
-        } else {
-            this.drawRect(
-                x,
-                y,
-                width,
-                height
-            );
+
+        if (rx)
+        {
+            this.drawRoundedRect(x, y, width, height, rx);
+        }
+        else
+        {
+            this.drawRect(x, y, width, height);
         }
     }
 
     /**
      * Get the style property and parse options.
      * @private
-     * @method PIXI.SVG#svgStyle
+     * @method
      * @param {SVGElement} node
      * @return {Object} Style attributes
      */
-    svgStyle (node) {
+    _svgStyle(node)
+    {
         const style = node.getAttribute('style');
         const result = {
             fill: node.getAttribute('fill'),
             opacity: node.getAttribute('opacity'),
             stroke: node.getAttribute('stroke'),
-            strokeWidth: node.getAttribute('stroke-width')
+            strokeWidth: node.getAttribute('stroke-width'),
+            cap: node.getAttribute('stroke-linecap'),
+            join: node.getAttribute('stroke-linejoin'),
+            miterLimit: node.getAttribute('stroke-miterlimit'),
         };
-        if (style !== null) {
-            style.split(';').forEach(prop => {
+
+        if (style !== null)
+        {
+            style.split(';').forEach((prop) =>
+            {
                 const [name, value] = prop.split(':');
-                if(name) result[name.trim()] = value.trim();
+
+                if (name)
+                {
+                    result[name.trim()] = value.trim();
+                }
             });
-            if (result['stroke-width']) {
+            if (result['stroke-width'])
+            {
                 result.strokeWidth = result['stroke-width'];
                 delete result['stroke-width'];
             }
         }
+
         return result;
     }
 
     /**
      * Render a polyline element.
      * @private
-     * @method PIXI.SVG#svgPoly
+     * @method
      * @param {SVGPolylineElement} node
      */
-    svgPoly (node, close) {
-
+    _svgPoly(node, close)
+    {
         const points = node.getAttribute('points')
             .split(/[ ,]/g)
-            .map(p => parseInt(p));
+            .map((p) => parseInt(p, 10));
 
         this.drawPolygon(points);
 
-        if (close) {
+        if (close)
+        {
             this.closePath();
         }
     }
@@ -210,69 +230,80 @@ export default class SVG extends PIXI.Graphics {
     /**
      * Set the fill and stroke style.
      * @private
-     * @method PIXI.SVG#fill
+     * @method
      * @param {SVGElement} node
      * @param {Boolean} inherit
      */
-    fill (node, inherit) {
-
-        const {fill, opacity, stroke, strokeWidth} = this.svgStyle(node);
+    _svgFill(node, inherit)
+    {
+        const { fill, opacity, stroke, strokeWidth, cap, join, miterLimit } = this._svgStyle(node);
         const defaultLineWidth = stroke !== null ? 1 : 0;
         const lineWidth = strokeWidth !== null ? parseFloat(strokeWidth) : defaultLineWidth;
-        const lineColor = stroke !== null ? this.hexToUint(stroke) : this.lineColor;
-        if (fill) {
-            if (fill === 'none') {
+        const lineColor = stroke !== null ? this._hexToUint(stroke) : this.lineColor;
+
+        if (fill)
+        {
+            if (fill === 'none')
+            {
                 this.beginFill(0, 0);
-            } else {
+            }
+            else
+            {
                 this.beginFill(
-                    this.hexToUint(fill),
-                    opacity !== null ? parseFloat(opacity) : 1
+                    this._hexToUint(fill),
+                    opacity !== null ? parseFloat(opacity) : 1,
                 );
             }
-        } else if (!inherit) {
+        }
+        else if (!inherit)
+        {
             this.beginFill(0);
         }
-        this.lineStyle(
-            lineWidth,
-            lineColor
-        );
 
-        // @if DEBUG
-        if (node.getAttribute('stroke-linejoin')) {
-            console.info('[SVGUtils] "stroke-linejoin" attribute is not supported');
+        this.lineStyle({
+            width: stroke === null && strokeWidth === null && inherit ? this.line.width : lineWidth,
+            color: stroke === null && inherit ? this.line.color : lineColor,
+            cap: cap === null && inherit ? this.line.cap : cap,
+            join: join === null && inherit ? this.line.join : join,
+            miterLimit: miterLimit === null && inherit ? this.line.miterLimit : parseFloat(miterLimit),
+        });
+
+        if (node.getAttribute('fill-rule'))
+        {
+            // eslint-disable-next-line no-console
+            console.info('[PIXI.SVG] "fill-rule" attribute is not supported');
         }
-        if (node.getAttribute('stroke-linecap')) {
-            console.info('[SVGUtils] "stroke-linecap" attribute is not supported');
-        }
-        if (node.getAttribute('fill-rule')) {
-            console.info('[SVGUtils] "fill-rule" attribute is not supported');
-        }
-        // @endif
     }
 
     /**
      * Render a <path> d element
-     * @method PIXI.SVG#svgPath
+     * @method
      * @param {SVGPathElement} node
      */
-    svgPath (node) {
+    _svgPath(node)
+    {
         const d = node.getAttribute('d');
-        let x, y;
-        const commands = dPathParse(d);
-        for (var i = 0; i < commands.length; i++) {
+        let x; let
+            y;
+        const commands = dPathParser(d);
+
+        for (let i = 0; i < commands.length; i++)
+        {
             const command = commands[i];
-            switch (command.code) {
+
+            switch (command.code)
+            {
                 case 'm': {
                     this.moveTo(
                         x += command.end.x,
-                        y += command.end.y
+                        y += command.end.y,
                     );
                     break;
                 }
                 case 'M': {
                     this.moveTo(
                         x = command.end.x,
-                        y = command.end.y
+                        y = command.end.y,
                     );
                     break;
                 }
@@ -299,14 +330,14 @@ export default class SVG extends PIXI.Graphics {
                 case 'L': {
                     this.lineTo(
                         x = command.end.x,
-                        y = command.end.y
+                        y = command.end.y,
                     );
                     break;
                 }
                 case 'l': {
                     this.lineTo(
                         x += command.end.x,
-                        y += command.end.y
+                        y += command.end.y,
                     );
                     break;
                 }
@@ -317,20 +348,21 @@ export default class SVG extends PIXI.Graphics {
                         command.cp2.x,
                         command.cp2.y,
                         x = command.end.x,
-                        y = command.end.y
+                        y = command.end.y,
                     );
                     break;
                 }
                 case 'c': {
                     const currX = x;
                     const currY = y;
+
                     this.bezierCurveTo(
                         currX + command.cp1.x,
                         currY + command.cp1.y,
                         currX + command.cp2.x,
                         currY + command.cp2.y,
                         x += command.end.x,
-                        y += command.end.y
+                        y += command.end.y,
                     );
                     break;
                 }
@@ -338,11 +370,12 @@ export default class SVG extends PIXI.Graphics {
                 case 'q': {
                     const currX = x;
                     const currY = y;
+
                     this.quadraticCurveTo(
                         currX + command.cp.x,
                         currY + command.cp.y,
                         x += command.end.x,
-                        y += command.end.y
+                        y += command.end.y,
                     );
                     break;
                 }
@@ -352,17 +385,26 @@ export default class SVG extends PIXI.Graphics {
                         command.cp.x,
                         command.cp.y,
                         x = command.end.x,
-                        y = command.end.y
+                        y = command.end.y,
                     );
                     break;
                 }
                 default: {
-                    // @if DEBUG
-                    console.info('[SVGUtils] Draw command not supported:', command.code, command);
-                    // @endif
+                    // eslint-disable-next-line no-console
+                    console.info('[PIXI.SVG] Draw command not supported:', command.code, command);
                     break;
                 }
             }
         }
     }
 }
+
+/**
+ * <div> element to measure string colors like "black"
+ * and convert to hex colors
+ * @private
+ */
+SVG.measureColor = document.createElement('div');
+
+export { SVG };
+

@@ -1,0 +1,31 @@
+{
+  "templates": {
+    "applicationName": "pixi-svg",
+    "meta": {
+      "title": "pixi-svg",
+      "description": "SVG to Graphics DisplayObject for PIXI",
+      "keyword": "PixiJS, Rendering, Graphics, SVG, Vector"
+    },
+    "linenums": true,
+    "default": {
+      "outputSourceFiles": true
+    }
+  },
+  "source": {
+    "include": ["./src/"],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "docs"
+  },
+  "plugins": [
+      "plugins/markdown",
+      "@pixi/jsdoc-template/plugins/es6-fix"
+  ],
+  "opts": {
+    "encoding": "utf8",
+    "recurse": true,
+    "private": false,
+    "lenient": false,
+    "destination": "./docs",
+    "template": "./node_modules/@pixi/jsdoc-template"
+  }
+}
