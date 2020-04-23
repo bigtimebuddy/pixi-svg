@@ -2,7 +2,7 @@
 
 SVG to Graphics DisplayObject for pixi.js.
 
-[![Build Status](https://travis-ci.org/bigtimebuddy/pixi-svg.svg?branch=master)](https://travis-ci.org/bigtimebuddy/pixi-svg)
+[![Node.js CI](https://github.com/bigtimebuddy/pixi-svg/workflows/Node.js%20CI/badge.svg)](https://github.com/bigtimebuddy/pixi-svg/actions?query=workflow%3A%22Node.js+CI%22)
 
 ## Examples
 
