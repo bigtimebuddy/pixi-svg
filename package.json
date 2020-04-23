@@ -37,9 +37,7 @@
   ],
   "files": [
     "dist/*",
-    "lib/*",
-    "README.md",
-    "LICENSE"
+    "index.d.ts"
   ],
   "readme": "README.md",
   "author": "Matt Karl <matt@mattkarl.com>",
