@@ -2,7 +2,7 @@
 
 declare namespace PIXI {
     export class SVG extends PIXI.Graphics {
-        constructor(svg:SVGSVGElement);
+        constructor(svg:SVGSVGElement|SVGElement|string);
     }
 }
 

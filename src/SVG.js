@@ -7,13 +7,27 @@ import color from 'tinycolor2';
  * @class SVG
  * @extends PIXI.Graphics
  * @memberof PIXI
- * @param {SVGSVGElement} svg - SVG Element `<svg>`
+ * @param {SVGSVGElement|SVGElement|string} svg - Inline SVGElement `<svg>` or buffer.
  */
 class SVG extends Graphics
 {
     constructor(svg)
     {
         super();
+
+        if (typeof svg === 'string')
+        {
+            const div = document.createElement('div');
+
+            div.innerHTML = svg.trim();
+            svg = div.querySelector('svg');
+        }
+
+        if (!svg)
+        {
+            throw new Error('Missing <svg> element in SVG constructor');
+        }
+
         this._svgFill(svg);
         this._svgChildren(svg.children);
     }
@@ -277,9 +291,9 @@ class SVG extends Graphics
     _svgPath(node)
     {
         const d = node.getAttribute('d');
-        let x; let
-            y;
-        const commands = dPathParser(d);
+        let x;
+        let y;
+        const commands = dPathParser(d.trim());
 
         for (let i = 0; i < commands.length; i++)
         {
