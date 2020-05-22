@@ -4,7 +4,7 @@
   "description": "SVG to Graphics DisplayObject for PIXI",
   "main": "dist/pixi-svg.cjs.js",
   "module": "dist/pixi-svg.es.js",
-  "browser": "dist/pixi-svg.js",
+  "bundle": "dist/pixi-svg.js",
   "types": "index.d.ts",
   "scripts": {
     "serve": "http-server . -o example",

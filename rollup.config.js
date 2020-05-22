@@ -57,7 +57,7 @@ export default [
         external: peerExternal,
         plugins,
         output: {
-            file: pkg.browser,
+            file: pkg.bundle,
             format: 'iife',
             name,
             footer: `Object.assign(PIXI, ${name});`,
