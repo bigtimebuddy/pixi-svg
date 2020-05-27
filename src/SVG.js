@@ -7,7 +7,7 @@ import color from 'tinycolor2';
  * @class SVG
  * @extends PIXI.Graphics
  * @memberof PIXI
- * @param {SVGSVGElement|SVGElement|string} svg - Inline SVGElement `<svg>` or buffer.
+ * @param {SVGSVGElement|SVGElement|string} [svg] - Inline SVGElement `<svg>` or buffer.
  */
 class SVG extends Graphics
 {
@@ -15,6 +15,20 @@ class SVG extends Graphics
     {
         super();
 
+        if (svg)
+        {
+            this.drawSVG(svg);
+        }
+    }
+
+    /**
+     * Draw an SVG element.
+     * @method PIXI.SVG#drawSVG
+     * @param {SVGSVGElement|SVGElement|string} svg - Inline SVGElement `<svg>` or buffer.
+     * @return {PIXI.SVG} Element suitable for chaining.
+     */
+    drawSVG(svg)
+    {
         if (typeof svg === 'string')
         {
             const div = document.createElement('div');
@@ -30,6 +44,8 @@ class SVG extends Graphics
 
         this._svgFill(svg);
         this._svgChildren(svg.children);
+
+        return this;
     }
 
     /**
