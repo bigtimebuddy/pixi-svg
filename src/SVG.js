@@ -191,6 +191,17 @@ class SVG extends Graphics
     }
 
     /**
+     * Convert the SVG style name into usable name.
+     * @param {string} name
+     * @return {string} name used to reference style
+     */
+    _convertStyleName(name) {
+        return name
+            .replace('-width', 'Width')
+            .replace(/.*-(line)?/, '');
+    }
+
+    /**
      * Get the style property and parse options.
      * @private
      * @method
@@ -218,14 +229,14 @@ class SVG extends Graphics
 
                 if (name)
                 {
-                    result[name.trim()] = value.trim();
+                    const convertedName = this._convertStyleName(name);
+
+                    if (!result[convertedName])
+                    {
+                        result[this._convertStyleName(name)] = value.trim();
+                    }
                 }
             });
-            if (result['stroke-width'])
-            {
-                result.strokeWidth = result['stroke-width'];
-                delete result['stroke-width'];
-            }
         }
 
         return result;
