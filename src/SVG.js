@@ -415,7 +415,7 @@ class SVG extends Graphics
                 }
                 case "a": {
                     const RAD = (Math.PI / 180);
-                    ctx.arc(
+                    this.arc(
                         (x += command.end.x),
                         (y += command.end.y),
                         command.rotation * RAD, 
@@ -427,7 +427,7 @@ class SVG extends Graphics
                 }
                 case "A": {
                     const RAD = (Math.PI / 180);
-                    ctx.arc(
+                    this.arc(
                         (x = command.end.x),
                         (y = command.end.y),
                         command.rotation * RAD, 
