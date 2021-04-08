@@ -235,7 +235,7 @@ class SVG extends Graphics
 
                     if (!result[convertedName])
                     {
-                        result[this._convertStyleName(name)] = value.trim();
+                        result[convertedName] = value.trim();
                     }
                 }
             });
