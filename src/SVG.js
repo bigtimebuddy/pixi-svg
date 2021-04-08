@@ -413,24 +413,26 @@ class SVG extends Graphics
                     );
                     break;
                 }
-                case "a": {
+                case 'a': {
                     const RAD = (Math.PI / 180);
+
                     this.arc(
                         (x += command.end.x),
                         (y += command.end.y),
-                        command.rotation * RAD, 
+                        command.rotation * RAD,
                         command.radii.x * RAD,
                         command.radii.y * RAD,
                         command.clockwise,
                     );
                     break;
                 }
-                case "A": {
+                case 'A': {
                     const RAD = (Math.PI / 180);
+
                     this.arc(
                         (x = command.end.x),
                         (y = command.end.y),
-                        command.rotation * RAD, 
+                        command.rotation * RAD,
                         command.radii.x * RAD,
                         command.radii.y * RAD,
                         command.clockwise
