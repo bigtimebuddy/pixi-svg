@@ -199,6 +199,7 @@ class SVG extends Graphics
     _convertStyleName(name)
     {
         return name
+            .trim()
             .replace('-width', 'Width')
             .replace(/.*-(line)?/, '');
     }
