@@ -192,6 +192,7 @@ class SVG extends Graphics
 
     /**
      * Convert the SVG style name into usable name.
+     * @private
      * @param {string} name
      * @return {string} name used to reference style
      */
