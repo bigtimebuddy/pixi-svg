@@ -413,6 +413,32 @@ class SVG extends Graphics
                     );
                     break;
                 }
+                case 'a': {
+                    const RAD = (Math.PI / 180);
+
+                    this.arc(
+                        (x += command.end.x),
+                        (y += command.end.y),
+                        command.rotation * RAD,
+                        command.radii.x * RAD,
+                        command.radii.y * RAD,
+                        command.clockwise,
+                    );
+                    break;
+                }
+                case 'A': {
+                    const RAD = (Math.PI / 180);
+
+                    this.arc(
+                        (x = command.end.x),
+                        (y = command.end.y),
+                        command.rotation * RAD,
+                        command.radii.x * RAD,
+                        command.radii.y * RAD,
+                        command.clockwise
+                    );
+                    break;
+                }
                 default: {
                     // eslint-disable-next-line no-console
                     console.info('[PIXI.SVG] Draw command not supported:', command.code, command);
