@@ -195,7 +195,8 @@ class SVG extends Graphics
      * @param {string} name
      * @return {string} name used to reference style
      */
-    _convertStyleName(name) {
+    _convertStyleName(name)
+    {
         return name
             .replace('-width', 'Width')
             .replace(/.*-(line)?/, '');
