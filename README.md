@@ -62,7 +62,6 @@ Only supports a subset of SVG's feature. Current this includes:
 - Interactivity
 - Any `transform` attributes
 - `<style>` elements are ignored
-- `<path>` elements which use arcs to draw (`a` or `A` drawing command)
 - `<text>` elements are ignored
 - Gradients or images
 - The following attributes are also ignored:
