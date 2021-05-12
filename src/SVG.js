@@ -449,7 +449,7 @@ class SVG extends Graphics
                         command.rotation * RAD,
                         command.radii.x * RAD,
                         command.radii.y * RAD,
-                        command.clockwise
+                        command.clockwise,
                     );
                     break;
                 }
