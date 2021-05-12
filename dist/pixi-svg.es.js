@@ -1,6 +1,6 @@
 /*!
- * pixi-svg - v2.3.0
- * Compiled Thu, 08 Apr 2021 20:38:34 UTC
+ * pixi-svg - v2.3.1
+ * Compiled Wed, 12 May 2021 16:35:41 UTC
  *
  * pixi-svg is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
