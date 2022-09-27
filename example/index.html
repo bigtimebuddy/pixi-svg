@@ -43,7 +43,7 @@
               padding:10px 0;
             }
         </style>
-        <script src="https://pixijs.download/dev/pixi.min.js"></script>
+        <script src="https://pixijs.download/dev/pixi.js"></script>
         <script src="../dist/pixi-svg.js"></script>
     </head>
     <body>
@@ -184,16 +184,15 @@
             function drawSVG(svg) {
                 const graphics = new PIXI.SVG(svg);
                 graphics.scale.set(appWidth / svg.dataset.width * resolution);
-                // svg.style = style;
                 app.stage.removeChildren();
                 app.stage.addChild(graphics);
-                app.ticker.update();
+                app.render();
 
                 const row = document.createElement('div');
                 row.className = 'row';
                 const pixiContainer = document.createElement('div');
                 pixiContainer.className = 'pixi';
-                pixiContainer.appendChild(app.renderer.plugins.extract.image());
+                pixiContainer.appendChild((app.renderer.extract || app.renderer.plugins.extract).image());
                 const svgContainer = document.createElement('div');
                 svgContainer.className = 'svg';
                 svgContainer.appendChild(svg);
@@ -208,7 +207,7 @@
                 width: appWidth * resolution,
                 height: appHeight * resolution,
                 backgroundColor: 0xffffff,
-                sharedTicker: true
+                autoStart: false,
             });
             app.stop();
             svgs.forEach(drawSVG);

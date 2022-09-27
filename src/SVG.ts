@@ -2,16 +2,31 @@ import { Graphics } from '@pixi/graphics';
 import dPathParser from 'd-path-parser';
 import color from 'tinycolor2';
 
+interface SVGStyle
+{
+    fill: string | null;
+    opacity: string | null;
+    stroke: string | null;
+    strokeWidth: string | null;
+    cap: string | null;
+    join: string | null;
+    miterLimit: string | null;
+}
+
 /**
  * Scalable Graphics drawn from SVG image document.
  * @class SVG
  * @extends PIXI.Graphics
- * @memberof PIXI
- * @param {SVGSVGElement|SVGElement|string} [svg] - Inline SVGElement `<svg>` or buffer.
  */
 class SVG extends Graphics
 {
-    constructor(svg)
+    /** Fallback line color */
+    private lineColor: string | null = null;
+
+    /**
+     * @param svg - Inline SVGElement `<svg>` or buffer.
+     */
+    constructor(svg?: SVGSVGElement | SVGElement | string)
     {
         super();
 
@@ -23,18 +38,17 @@ class SVG extends Graphics
 
     /**
      * Draw an SVG element.
-     * @method PIXI.SVG#drawSVG
-     * @param {SVGSVGElement|SVGElement|string} svg - Inline SVGElement `<svg>` or buffer.
-     * @return {PIXI.SVG} Element suitable for chaining.
+     * @param svg - Inline SVGElement `<svg>` or buffer.
+     * @return Element suitable for chaining.
      */
-    drawSVG(svg)
+    drawSVG(svg: SVGSVGElement | SVGElement | string): this
     {
         if (typeof svg === 'string')
         {
             const div = document.createElement('div');
 
             div.innerHTML = svg.trim();
-            svg = div.querySelector('svg');
+            svg = div.querySelector('svg') as SVGElement;
         }
 
         if (!svg)
@@ -50,39 +64,37 @@ class SVG extends Graphics
 
     /**
      * Create a PIXI Graphic from SVG element
-     * @private
-     * @method
-     * @param {Array<*>} children - Collection of SVG nodes
-     * @param {Boolean} [inherit=false] Whether to inherit fill settings.
+     * @param children - Collection of SVG nodes
+     * @param inherit - Whether to inherit fill settings.
      */
-    _svgChildren(children, inherit = false)
+    private _svgChildren(children: HTMLCollection, inherit = false): void
     {
         for (let i = 0; i < children.length; i++)
         {
-            const child = children[i];
+            const child = children[i] as unknown as SVGElement;
 
             this._svgFill(child, inherit);
             switch (child.nodeName.toLowerCase())
             {
                 case 'path': {
-                    this._svgPath(child);
+                    this._svgPath(child as SVGPathElement);
                     break;
                 }
                 case 'circle':
                 case 'ellipse': {
-                    this._svgCircle(child);
+                    this._svgCircle(child as SVGCircleElement);
                     break;
                 }
                 case 'rect': {
-                    this._svgRect(child);
+                    this._svgRect(child as SVGRectElement);
                     break;
                 }
                 case 'polygon': {
-                    this._svgPoly(child, true);
+                    this._svgPoly(child as SVGPolygonElement, true);
                     break;
                 }
                 case 'polyline': {
-                    this._svgPoly(child);
+                    this._svgPoly(child as SVGPolylineElement);
                     break;
                 }
                 case 'g': {
@@ -98,12 +110,8 @@ class SVG extends Graphics
         }
     }
 
-    /**
-     * Convert the Hexidecimal string (e.g., "#fff") to uint
-     * @private
-     * @method
-     */
-    _hexToUint(hex)
+    /** Convert the Hexidecimal string (e.g., "#fff") to uint */
+    private _hexToUint(hex: string): number
     {
         if (hex[0] === '#')
         {
@@ -126,11 +134,9 @@ class SVG extends Graphics
 
     /**
      * Render a <ellipse> element or <circle> element
-     * @private
-     * @method
-     * @param {SVGCircleElement} node
+     * @param node - Circle element
      */
-    _svgCircle(node)
+    private _svgCircle(node: SVGCircleElement): void
     {
         let heightProp = 'r';
         let widthProp = 'r';
@@ -141,8 +147,8 @@ class SVG extends Graphics
             heightProp += 'x';
             widthProp += 'y';
         }
-        const width = parseFloat(node.getAttribute(widthProp));
-        const height = parseFloat(node.getAttribute(heightProp));
+        const width = parseFloat(node.getAttribute(widthProp) as string);
+        const height = parseFloat(node.getAttribute(heightProp) as string);
         const cx = node.getAttribute('cx');
         const cy = node.getAttribute('cy');
         let x = 0;
@@ -168,17 +174,15 @@ class SVG extends Graphics
 
     /**
      * Render a <rect> element
-     * @private
-     * @method
-     * @param {SVGRectElement} node
+     * @param node - Rectangle element
      */
-    _svgRect(node)
+    private _svgRect(node: SVGRectElement): void
     {
-        const x = parseFloat(node.getAttribute('x'));
-        const y = parseFloat(node.getAttribute('y'));
-        const width = parseFloat(node.getAttribute('width'));
-        const height = parseFloat(node.getAttribute('height'));
-        const rx = parseFloat(node.getAttribute('rx'));
+        const x = parseFloat(node.getAttribute('x') as string);
+        const y = parseFloat(node.getAttribute('y') as string);
+        const width = parseFloat(node.getAttribute('width') as string);
+        const height = parseFloat(node.getAttribute('height') as string);
+        const rx = parseFloat(node.getAttribute('rx') as string);
 
         if (rx)
         {
@@ -192,11 +196,10 @@ class SVG extends Graphics
 
     /**
      * Convert the SVG style name into usable name.
-     * @private
-     * @param {string} name
-     * @return {string} name used to reference style
+     * @param name - Name of style
+     * @return Name used to reference style
      */
-    _convertStyleName(name)
+    private _convertStyleName(name: string): string
     {
         return name
             .trim()
@@ -206,15 +209,13 @@ class SVG extends Graphics
 
     /**
      * Get the style property and parse options.
-     * @private
-     * @method
-     * @param {SVGElement} node
-     * @return {Object} Style attributes
+     * @param node - Element with style
+     * @return Style attributes
      */
-    _svgStyle(node)
+    private _svgStyle(node: SVGElement): SVGStyle
     {
         const style = node.getAttribute('style');
-        const result = {
+        const result: SVGStyle = {
             fill: node.getAttribute('fill'),
             opacity: node.getAttribute('opacity'),
             stroke: node.getAttribute('stroke'),
@@ -232,7 +233,7 @@ class SVG extends Graphics
 
                 if (name)
                 {
-                    const convertedName = this._convertStyleName(name);
+                    const convertedName = this._convertStyleName(name) as keyof typeof result;
 
                     if (!result[convertedName])
                     {
@@ -247,13 +248,12 @@ class SVG extends Graphics
 
     /**
      * Render a polyline element.
-     * @private
-     * @method
-     * @param {SVGPolylineElement} node
+     * @param node - Polyline element
+     * @param close - Close the path
      */
-    _svgPoly(node, close)
+    private _svgPoly(node: SVGPolylineElement, close?: boolean)
     {
-        const points = node.getAttribute('points')
+        const points = (node.getAttribute('points') as string)
             .split(/[ ,]/g)
             .map((p) => parseInt(p, 10));
 
@@ -267,12 +267,10 @@ class SVG extends Graphics
 
     /**
      * Set the fill and stroke style.
-     * @private
-     * @method
-     * @param {SVGElement} node
-     * @param {Boolean} inherit
+     * @param node - SVG element
+     * @param inherit - Inherit the fill style
      */
-    _svgFill(node, inherit)
+    private _svgFill(node: SVGElement, inherit?: boolean)
     {
         const { fill, opacity, stroke, strokeWidth, cap, join, miterLimit } = this._svgStyle(node);
         const defaultLineWidth = stroke !== null ? 1 : 0;
@@ -303,8 +301,8 @@ class SVG extends Graphics
             color: stroke === null && inherit ? this.line.color : lineColor,
             cap: cap === null && inherit ? this.line.cap : cap,
             join: join === null && inherit ? this.line.join : join,
-            miterLimit: miterLimit === null && inherit ? this.line.miterLimit : parseFloat(miterLimit),
-        });
+            miterLimit: miterLimit === null && inherit ? this.line.miterLimit : parseFloat(miterLimit as string),
+        } as any);
 
         if (node.getAttribute('fill-rule'))
         {
@@ -315,14 +313,13 @@ class SVG extends Graphics
 
     /**
      * Render a <path> d element
-     * @method
-     * @param {SVGPathElement} node
+     * @param node - Path element.
      */
-    _svgPath(node)
+    private _svgPath(node: SVGPathElement)
     {
-        const d = node.getAttribute('d');
-        let x;
-        let y;
+        const d = node.getAttribute('d') as string;
+        let x = 0;
+        let y = 0;
         const commands = dPathParser(d.trim());
 
         for (let i = 0; i < commands.length; i++)

@@ -3,3 +3,5 @@ node_modules
 *.log
 dist
 docs
+example.api.json*
+.types_output

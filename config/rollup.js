@@ -1,10 +1,8 @@
-import { terser } from 'rollup-plugin-terser';
-import transpile from '@rollup/plugin-buble';
+import esbuild from 'rollup-plugin-esbuild';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
-import pkg from './package.json';
+import pkg from '../package.json';
 
-const prod = process.env.NODE_ENV === 'production'
 const compiled = (new Date()).toUTCString().replace(/GMT/g, 'UTC');
 const banner = [
     `/*!`,
@@ -18,18 +16,16 @@ const banner = [
 
 const name = '_pixi_svg';
 const sourcemap = true;
-const input = 'src/index.js';
+const input = 'src/index.ts';
 const peerExternal = Object.keys(pkg.peerDependencies);
 const bundleExternal = Object.keys(pkg.dependencies).concat(peerExternal);
 const plugins = [
     resolve(),
     commonjs(),
-    transpile(),
-    ...prod ? [terser({
-        output: {
-            comments: (node, comment) => comment.line === 1
-        }
-    })] : []
+    esbuild({
+        target: 'ES2017',
+        minify: process.env.NODE_ENV === 'production',
+    }),
 ];
 
 export default [
@@ -40,7 +36,7 @@ export default [
         output: [
             {
                 file: pkg.module,
-                format: 'es',
+                format: 'esm',
                 sourcemap,
                 banner,
             },

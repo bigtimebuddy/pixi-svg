@@ -30,7 +30,7 @@ For an inline SVG element:
 Create a new `PIXI.SVG` object, provide the `<svg>` element.
 
 ```js
-import { Application } from '@pixi/app';
+import { Application } from 'pixi.js';
 import { SVG } from 'pixi-svg';
 
 const svg = new SVG(document.getElementById("svg1"));
