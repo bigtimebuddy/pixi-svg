@@ -181,7 +181,7 @@
                 appWidth = aspectRatio * appHeight;
             }
 
-            function drawSVG(svg) {
+            async function drawSVG(svg) {
                 const graphics = new PIXI.SVG(svg);
                 graphics.scale.set(appWidth / svg.dataset.width * resolution);
                 app.stage.removeChildren();
@@ -192,7 +192,13 @@
                 row.className = 'row';
                 const pixiContainer = document.createElement('div');
                 pixiContainer.className = 'pixi';
-                pixiContainer.appendChild((app.renderer.extract || app.renderer.plugins.extract).image());
+                // PixiJS v6
+                if ('extract' in app.renderer.plugins) {
+                  pixiContainer.appendChild(app.renderer.plugins.extract.image());
+                }
+                else {
+                  pixiContainer.appendChild(await app.renderer.extract.image());
+                }
                 const svgContainer = document.createElement('div');
                 svgContainer.className = 'svg';
                 svgContainer.appendChild(svg);
