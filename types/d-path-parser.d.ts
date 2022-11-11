@@ -13,6 +13,7 @@ declare module 'd-path-parser' {
         rotation: number;
         radii: Point;
         clockwise: boolean;
+        large: boolean;
     }
     export default function parse(path: string): Command[];
 }

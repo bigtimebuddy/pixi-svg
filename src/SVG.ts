@@ -1,6 +1,7 @@
 import { Graphics } from '@pixi/graphics';
 import dPathParser from 'd-path-parser';
 import color from 'tinycolor2';
+import arcToBezier from 'svg-arc-to-cubic-bezier';
 
 interface SVGStyle
 {
@@ -8,6 +9,7 @@ interface SVGStyle
     opacity: string | null;
     stroke: string | null;
     strokeWidth: string | null;
+    strokeOpacity: string | null;
     cap: string | null;
     join: string | null;
     miterLimit: string | null;
@@ -215,10 +217,12 @@ class SVG extends Graphics
     private _svgStyle(node: SVGElement): SVGStyle
     {
         const style = node.getAttribute('style');
+        const baseOpacity = node.getAttribute('opacity');
         const result: SVGStyle = {
             fill: node.getAttribute('fill'),
-            opacity: node.getAttribute('opacity'),
+            opacity: baseOpacity || node.getAttribute('fill-opacity'),
             stroke: node.getAttribute('stroke'),
+            strokeOpacity: baseOpacity || node.getAttribute('stroke-opacity'),
             strokeWidth: node.getAttribute('stroke-width'),
             cap: node.getAttribute('stroke-linecap'),
             join: node.getAttribute('stroke-linejoin'),
@@ -272,7 +276,7 @@ class SVG extends Graphics
      */
     private _svgFill(node: SVGElement, inherit?: boolean)
     {
-        const { fill, opacity, stroke, strokeWidth, cap, join, miterLimit } = this._svgStyle(node);
+        const { fill, opacity, stroke, strokeOpacity, strokeWidth, cap, join, miterLimit } = this._svgStyle(node);
         const defaultLineWidth = stroke !== null ? 1 : 0;
         const lineWidth = strokeWidth !== null ? parseFloat(strokeWidth) : defaultLineWidth;
         const lineColor = stroke !== null ? this._hexToUint(stroke) : this.lineColor;
@@ -298,6 +302,7 @@ class SVG extends Graphics
 
         this.lineStyle({
             width: stroke === null && strokeWidth === null && inherit ? this.line.width : lineWidth,
+            alpha: strokeOpacity === null ? this.line.alpha : parseFloat(strokeOpacity),
             color: stroke === null && inherit ? this.line.color : lineColor,
             cap: cap === null && inherit ? this.line.cap : cap,
             join: join === null && inherit ? this.line.join : join,
@@ -424,30 +429,37 @@ class SVG extends Graphics
                     );
                     break;
                 }
+                // The arc and arcTo commands are incompatible
+                // with SVG (mostly because elliptical arcs)
+                // so we normalize arcs from SVG into bezier curves
                 case 'a': {
-                    const RAD = (Math.PI / 180);
-
-                    this.arc(
-                        (x += command.end.x),
-                        (y += command.end.y),
-                        command.rotation * RAD,
-                        command.radii.x * RAD,
-                        command.radii.y * RAD,
-                        command.clockwise,
-                    );
+                    arcToBezier({
+                        px: x,
+                        py: y,
+                        cx: x += command.end.x,
+                        cy: y += command.end.y,
+                        rx: command.radii.x,
+                        ry: command.radii.y,
+                        xAxisRotation: command.rotation,
+                        largeArcFlag: command.large ? 1 : 0,
+                        sweepFlag: command.clockwise ? 1 : 0,
+                    }).forEach(({ x1, y1, x2, y2, x, y }) =>
+                        this.bezierCurveTo(x1, y1, x2, y2, x, y));
                     break;
                 }
                 case 'A': {
-                    const RAD = (Math.PI / 180);
-
-                    this.arc(
-                        (x = command.end.x),
-                        (y = command.end.y),
-                        command.rotation * RAD,
-                        command.radii.x * RAD,
-                        command.radii.y * RAD,
-                        command.clockwise,
-                    );
+                    arcToBezier({
+                        px: x,
+                        py: y,
+                        cx: x = command.end.x,
+                        cy: y = command.end.y,
+                        rx: command.radii.x,
+                        ry: command.radii.y,
+                        xAxisRotation: command.rotation,
+                        largeArcFlag: command.large ? 1 : 0,
+                        sweepFlag: command.clockwise ? 1 : 0,
+                    }).forEach(({ x1, y1, x2, y2, x, y }) =>
+                        this.bezierCurveTo(x1, y1, x2, y2, x, y));
                     break;
                 }
                 default: {
