@@ -213,13 +213,7 @@
                 row.className = 'row';
                 const pixiContainer = document.createElement('div');
                 pixiContainer.className = 'pixi';
-                // PixiJS v6
-                if ('extract' in app.renderer.plugins) {
-                  pixiContainer.appendChild(app.renderer.plugins.extract.image());
-                }
-                else {
-                  pixiContainer.appendChild(await app.renderer.extract.image());
-                }
+                pixiContainer.appendChild(await app.renderer.extract.image());
                 const svgContainer = document.createElement('div');
                 svgContainer.className = 'svg';
                 svgContainer.appendChild(svg);
