@@ -1,6 +1,6 @@
 {
   "name": "pixi-svg",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "SVG to Graphics DisplayObject for PIXI",
   "main": "./lib/index.js",
   "module": "./lib/index.mjs",
@@ -13,7 +13,9 @@
     }
   },
   "extensionConfig": {
-    "lint": ["src"],
+    "lint": [
+      "src"
+    ],
     "namespace": "PIXI",
     "docsCopyright": "PIXI Copyright &copy; 2022 Matt Karl.",
     "docsTitle": "PixiJS SVG Graphics Plugin",
