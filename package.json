@@ -2,43 +2,36 @@
   "name": "pixi-svg",
   "version": "3.1.0",
   "description": "SVG to Graphics DisplayObject for PIXI",
-  "main": "./dist/pixi-svg.cjs.js",
-  "module": "./dist/pixi-svg.esm.mjs",
-  "bundle": "./dist/pixi-svg.js",
-  "types": "./dist/pixi-svg.d.ts",
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/pixi-svg.esm.mjs",
-      "require": "./dist/pixi-svg.cjs.js",
-      "types": "./dist/pixi-svg.d.ts"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
     }
   },
+  "extensionConfig": {
+    "lint": ["src"],
+    "namespace": "PIXI",
+    "docsCopyright": "PIXI Copyright &copy; 2022 Matt Karl.",
+    "docsTitle": "PixiJS SVG Graphics Plugin",
+    "docsDescription": "SVG to Graphics DisplayObject for PIXI",
+    "docsKeyword": "PixiJS, Rendering, Graphics, SVG, Vector"
+  },
   "scripts": {
-    "serve": "http-server . -o example",
-    "watch": "rollup -c  config/rollup.js -w",
-    "clean": "rimraf dist/*",
-    "prebuild": "run-s lint types clean ",
-    "build": "cross-env NODE_ENV=production rollup -c config/rollup.js",
-    "postbuild": "run-s build:types",
-    "build:dev": "rollup -c config/rollup.js",
-    "prebuild:types": "rimraf .types_output/**",
-    "build:types": "tsc --declaration --emitDeclarationOnly --skipLibCheck --outDir .types_output",
-    "postbuild:types": "api-extractor run --local",
-    "example": "run-p watch serve",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
-    "types": "tsc -noEmit",
-    "test": "run-s build",
-    "postversion": "run-s build",
-    "docs": "webdoc -c config/webdoc.json -R README.md",
-    "predeploy": "run-s build docs",
-    "deploy": "gh-pages -f -d . -s \"{dist,docs,example}/*\"",
-    "publish:patch": "npm version patch && npm publish",
-    "publish:minor": "npm version minor && npm publish",
-    "publish:major": "npm version major && npm publish",
-    "postpublish": "git push && git push --tags && npm run deploy",
-    "prepack": "clean-package",
-    "postpack": "clean-package restore"
+    "watch": "xs watch",
+    "clean": "xs clean",
+    "build": "xs build",
+    "start": "xs serve",
+    "lint": "xs lint",
+    "lint:fix": "xs lint --fix",
+    "types": "xs types",
+    "test": "xs build,docs",
+    "docs": "xs docs",
+    "deploy": "xs deploy",
+    "release": "xs release"
   },
   "repository": {
     "type": "git",
@@ -52,7 +45,8 @@
     "webgl"
   ],
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "readme": "README.md",
   "author": "Matt Karl <matt@mattkarl.com>",
@@ -70,52 +64,19 @@
     "lint",
     "types"
   ],
-  "clean-package": {
-    "indent": 2,
-    "remove": [
-      "clean-package",
-      "scripts",
-      "engines",
-      "pre-commit",
-      "devDependencies",
-      "eslintConfig"
-    ]
-  },
   "peerDependencies": {
     "@pixi/graphics": ">=5.0.0"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.13.3",
-    "@pixi/core": "^7.0.0-X",
-    "@pixi/display": "^7.0.0-X",
-    "@pixi/eslint-config": "^4.0.1",
+    "@pixi/core": "^7.0.0",
+    "@pixi/display": "^7.0.0",
+    "@pixi/extension-scripts": "^1.3.0",
     "@pixi/graphics": "^7.0.0-X",
-    "@pixi/webdoc-template": "^1.5.3",
-    "@rollup/plugin-commonjs": "^11.1.0",
-    "@rollup/plugin-node-resolve": "^7.1.3",
     "@types/svg-arc-to-cubic-bezier": "^3.2.0",
     "@types/tinycolor2": "^1.4.3",
-    "@webdoc/cli": "^2.1.2",
-    "clean-package": "^1.0.1",
-    "cross-env": "^7.0.2",
-    "eslint": "^8.24.0",
-    "gh-pages": "^4.0.0",
-    "http-server": "^14.1.1",
-    "npm-run-all": "^4.1.5",
     "pre-commit": "^1.2.2",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.79.0",
-    "rollup-plugin-esbuild": "^4.0.0",
     "tinycolor2": "^1.4.2",
-    "typescript": "~4.7.0"
-  },
-  "dependencies": {
     "d-path-parser": "^1.0.0",
     "svg-arc-to-cubic-bezier": "^3.2.0"
-  },
-  "eslintConfig": {
-    "extends": [
-      "@pixi/eslint-config"
-    ]
   }
 }

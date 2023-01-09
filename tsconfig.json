@@ -1,12 +1,5 @@
 {
-  "compilerOptions": {
-    "sourceMap": true,
-    "target": "ES2017",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "strict": true,
-    "esModuleInterop": true
-  },
+  "extends": "@pixi/extension-scripts/lib/configs/tsconfig.json",
   "include": [
     "./src/**/*.ts",
     "./types/*.d.ts"
