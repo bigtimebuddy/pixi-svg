@@ -40,7 +40,7 @@ app.stage.addChild(svg);
 
 ## Supported Features
 
-Only supports a subset of SVG's feature. Current this includes: 
+Only supports a subset of SVG's features. Currently, this includes: 
 - SVG Elements:
   - `<path>`
   - `<circle>`
