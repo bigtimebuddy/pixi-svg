@@ -7,7 +7,7 @@ SVG to Graphics DisplayObject for PixiJS.
 ## Examples
 
 See SVG and pixi.js side-by-side comparisons:
-https://mattkarl.com/pixi-svg/example/
+https://mattkarl.com/pixi-svg/examples/
 
 ## Install
 
